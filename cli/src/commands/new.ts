@@ -3,7 +3,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const SYSTEM_ROOT = path.resolve(__dirname, '../../../..');
+// dist/cli/src/commands 또는 cli/src/commands 에서 실행될 수 있음
+const SYSTEM_ROOT = __dirname.includes('/dist/')
+  ? path.resolve(__dirname, '../../../..')  // dist/cli/src/commands → sdd-system
+  : path.resolve(__dirname, '../../..');     // cli/src/commands → sdd-system
 
 interface TypeConfig {
   templateFile: string;

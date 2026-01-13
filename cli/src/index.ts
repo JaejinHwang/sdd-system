@@ -2,6 +2,7 @@
 import { Command } from 'commander';
 import { initCommand } from './commands/init.js';
 import { newCommand } from './commands/new.js';
+import { updateCommand } from './commands/update.js';
 
 const program = new Command();
 
@@ -21,5 +22,16 @@ program
   .command('new <type> <name>')
   .description('새 스펙 파일 생성 (feature, requirement, adr)')
   .action(newCommand);
+
+program
+  .command('update')
+  .description('SDD System 업데이트 (템플릿, 명령어, 스크립트)')
+  .option('-t, --templates', '스펙 템플릿만 업데이트')
+  .option('-c, --commands', 'Claude 명령어만 업데이트')
+  .option('-s, --scripts', '스크립트만 업데이트')
+  .option('-a, --all', '모든 컴포넌트 업데이트')
+  .option('--check', '업데이트 가능 여부만 확인')
+  .option('-f, --force', '백업 없이 강제 업데이트')
+  .action(updateCommand);
 
 program.parse();
