@@ -1,0 +1,177 @@
+# ============================================================
+# SDD System Configuration
+# 스펙 드리븐 개발 시스템 전역 설정
+# ============================================================
+# 개인 설정은 config.local.yaml에 작성 (Git 제외)
+# ============================================================
+
+sdd_system:
+  version: "1.0.0"
+  name: "Spec-Driven Development System"
+
+# ============================================================
+# 기본값 설정
+# ============================================================
+defaults:
+  # 새 프로젝트 생성 시 기본 기술 스택
+  tech_stack: "nextjs-supabase"
+  
+  # AI 모델 설정
+  ai:
+    provider: "anthropic"
+    model: "claude-sonnet-4-20250514"
+    max_tokens: 8000
+  
+  # 스펙 문서 언어
+  language: "ko"  # ko | en
+  
+  # 스펙 파일 형식
+  spec_format: "yaml"  # yaml | json
+
+# ============================================================
+# 경로 설정
+# ============================================================
+paths:
+  # SDD 시스템 내부 경로 (상대 경로)
+  templates: "./templates"
+  commands: "./commands"
+  scripts: "./scripts"
+  
+  # 프로젝트 생성 위치 (절대 경로)
+  # config.local.yaml에서 개인 환경에 맞게 오버라이드
+  projects_base: "~/projects"
+
+# ============================================================
+# 프로젝트 생성 옵션
+# ============================================================
+project:
+  # 기본 포함 항목
+  include:
+    specs: true
+    claude_commands: true
+    scripts: true
+    git_init: true
+    
+  # .gitignore에 추가할 항목
+  gitignore_extras:
+    - ".env.local"
+    - "*.local.yaml"
+    
+  # 초기 Git 커밋 메시지
+  initial_commit_message: "chore: initialize project with SDD system"
+
+# ============================================================
+# Claude Code 설정
+# ============================================================
+claude_code:
+  # 슬래시 명령어 자동 복사
+  auto_copy_commands: true
+  
+  # 명령어 접두사 (충돌 방지용)
+  command_prefix: ""  # 예: "sdd-" → /sdd-implement
+  
+  # 컨텍스트에 자동 포함할 파일
+  auto_include_files:
+    - "CLAUDE.md"
+    - "specs/traceability.yaml"
+    - "specs/02-specification/functional-spec.yaml"
+
+# ============================================================
+# 자동화 설정
+# ============================================================
+automation:
+  # 스펙 변경 시 자동 검증
+  auto_validate_on_change: true
+  
+  # 구현 완료 시 자동 traceability 업데이트
+  auto_update_traceability: true
+  
+  # 변경 시 자동 changelog 기록
+  auto_changelog: true
+
+# ============================================================
+# 외부 연동 설정
+# ============================================================
+integrations:
+  # Linear 연동
+  linear:
+    enabled: false
+    # config.local.yaml에서 설정:
+    # api_key: "your-api-key"
+    # team_id: "your-team-id"
+    
+    # 태스크 동기화 설정
+    sync:
+      create_issues: true      # 태스크 → Linear 이슈 생성
+      update_status: true      # 상태 변경 동기화
+      link_in_spec: true       # 스펙에 Linear 링크 추가
+  
+  # GitHub 연동
+  github:
+    enabled: true
+    
+    # 자동 커밋 설정
+    auto_commit:
+      enabled: false
+      # 스펙 변경 시 자동 커밋
+      on_spec_change: true
+      # 구현 완료 시 자동 커밋
+      on_implementation: true
+    
+    # GitHub Actions
+    actions:
+      # 스펙 검증 워크플로우
+      validate_on_pr: true
+  
+  # Notion 연동 (문서 내보내기용)
+  notion:
+    enabled: false
+    # config.local.yaml에서 설정:
+    # api_key: "your-notion-key"
+    # database_id: "your-database-id"
+
+# ============================================================
+# 컨벤션 설정
+# ============================================================
+conventions:
+  # 커밋 메시지 접두사
+  commit_prefixes:
+    spec: "spec"           # spec(requirements): add user story
+    feature: "feat"        # feat(F-001): implement pdf upload
+    fix: "fix"             # fix(F-001): handle encrypted pdf
+    docs: "docs"           # docs: update README
+    
+  # 브랜치 네이밍
+  branch_patterns:
+    feature: "feature/{feature-id}-{short-description}"
+    fix: "fix/{task-id}-{short-description}"
+    
+  # ID 형식
+  id_formats:
+    user_story: "US-{number:03d}"    # US-001
+    feature: "F-{number:03d}"         # F-001
+    task: "TASK-{number:03d}"         # TASK-001
+    adr: "ADR-{number:03d}"           # ADR-001
+    screen: "SCR-{number:03d}"        # SCR-001
+
+# ============================================================
+# 검증 규칙
+# ============================================================
+validation:
+  # 필수 필드 검사
+  required_fields:
+    user_story:
+      - "as_a"
+      - "i_want"
+      - "so_that"
+      - "acceptance_criteria"
+    feature:
+      - "states"
+      - "error_cases"
+    
+  # 경고 규칙
+  warnings:
+    # 에러 케이스가 3개 미만이면 경고
+    min_error_cases: 3
+    # 엣지 케이스가 없으면 경고
+    require_edge_cases: true

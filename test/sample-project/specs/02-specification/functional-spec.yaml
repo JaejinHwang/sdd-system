@@ -1,0 +1,19 @@
+metadata:
+  id: "FUNC-001"
+  title: "테스트 기능명세"
+  version: "0.1.0"
+  status: "draft"
+
+features:
+  - id: "F-001"
+    name: "PDF 업로드"
+    description: "사용자가 PDF 파일을 업로드한다"
+    priority: "must"
+    requirements: ["R-001"]
+    
+  - id: "F-002"
+    name: "PDF 파싱"
+    description: "업로드된 PDF를 텍스트로 변환한다"
+    priority: "must"
+    dependencies: ["F-001"]
+    requirements: ["R-001", "R-002"]
