@@ -28,6 +28,7 @@ task_queue:
       functional: "specs/02-specification/functional-spec.yaml#F-001"
       technical: "specs/02-specification/technical-spec.yaml#api_spec.endpoints[0]"
       ui: "specs/02-specification/ui-spec.yaml#SCR-001"
+      design_system: "templates/design-system/qds4-web.yaml"  # UI 작업 시 필수 참조
     
     # 인수 조건 (requirements.yaml에서 복사)
     acceptance_criteria:

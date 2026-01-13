@@ -27,7 +27,25 @@ traceability:
   features_to_ui:
     F-001: ["SCR-001.{{component_id}}"]
     # {{feature_id}}: [{{screen.component}}]
-  
+
+  # UI → 디자인 시스템 매핑
+  # "이 화면은 어떤 QDS4 컴포넌트/토큰을 사용하나?"
+  ui_to_design_system:
+    SCR-001:
+      qds4_components:
+        - "Button"
+        - "TopAppBar"
+        # QDS4 컴포넌트명 나열
+      color_tokens:
+        - "blue_50"
+        - "gray_100"
+        # 사용된 COLOR 토큰
+      typography_tokens:
+        - "title_1"
+        - "body_1"
+        # 사용된 typography 토큰
+    # {{screen_id}}: { qds4_components, color_tokens, typography_tokens }
+
   # 기능 → 코드 매핑 (구현 후 자동 업데이트)
   # "이 기능의 실제 코드는 어디에 있나?"
   features_to_code:
