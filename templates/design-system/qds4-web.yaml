@@ -1,0 +1,762 @@
+# ============================================================
+# QDS4 Design System Reference
+# @qanda/qds4-web 디자인 시스템 레퍼런스
+# ============================================================
+# 공식 문서: https://github.com/mathpresso/qanda-design-system-docs
+# 데모 페이지: https://mathpresso.github.io/qanda-design-system-docs
+# ============================================================
+# 이 파일은 UI 스펙 작성 시 참조용으로 사용됩니다.
+# UI 구현 시 반드시 이 파일에 정의된 토큰과 컴포넌트만 사용해야 합니다.
+# ============================================================
+
+design_system:
+  name: "@qanda/qds4-web"
+  version: "0.0.2"
+  description: "Q&A 서비스를 위한 공식 디자인 시스템"
+
+# ============================================================
+# 색상 토큰 (Color Tokens)
+# ============================================================
+# 사용법: import { COLOR } from '@qanda/qds4-web/base.ts'
+# 예시: COLOR.blue_50, COLOR.gray_100
+# ============================================================
+color_tokens:
+  # 그레이스케일 (Gray Scale)
+  gray:
+    gray_0: "#000000"      # 순수 검정
+    gray_5: "#141514"
+    gray_10: "#1e1f1f"
+    gray_20: "#323334"
+    gray_30: "#4b4e4d"
+    gray_40: "#646866"
+    gray_50: "#828785"
+    gray_60: "#9ca09f"
+    gray_70: "#bec1c0"
+    gray_80: "#d8d8da"
+    gray_90: "#edeeed"
+    gray_95: "#f7f8f7"
+    gray_100: "#ffffff"    # 순수 흰색
+
+  # 블루 (Primary / Accent)
+  blue:
+    blue_5: "#03182b"
+    blue_10: "#042643"
+    blue_20: "#073e6e"
+    blue_30: "#0a5799"
+    blue_40: "#0c6cc0"
+    blue_50: "#0f85eb"     # Primary Blue
+    blue_60: "#44a2f3"
+    blue_70: "#7ebff7"
+    blue_80: "#a9d4f9"
+    blue_90: "#cfe7fc"
+    blue_95: "#ecf5fe"
+
+  # 오렌지 (Warning / Highlight)
+  orange:
+    orange_5: "#280f01"
+    orange_10: "#3b1702"
+    orange_20: "#632603"
+    orange_30: "#943905"
+    orange_40: "#c64c06"
+    orange_50: "#f86612"   # Primary Orange
+    orange_60: "#f97f39"
+    orange_70: "#fba674"
+    orange_80: "#fcc6a6"
+    orange_90: "#fddfcd"
+    orange_95: "#fff5f0"
+
+  # 레드 (Error / Danger)
+  red:
+    red_5: "#260305"
+    red_10: "#460609"
+    red_20: "#710a0e"
+    red_30: "#960d13"
+    red_40: "#bc1018"
+    red_50: "#e2131d"      # Primary Red
+    red_60: "#f15b61"
+    red_70: "#f47c81"
+    red_80: "#f8abae"
+    red_90: "#fbd0d2"
+    red_95: "#fef1f1"
+
+  # 옐로우 (Warning)
+  yellow:
+    yellow_5: "#231b01"
+    yellow_10: "#453602"
+    yellow_20: "#6d5403"
+    yellow_30: "#9e7b05"
+    yellow_40: "#d5a507"
+    yellow_50: "#f8c51b"   # Primary Yellow
+    yellow_60: "#fad457"
+    yellow_70: "#fbe088"
+    yellow_80: "#fdebb0"
+    yellow_90: "#fef5d7"
+    yellow_95: "#fffbf0"
+
+  # 그린 (Success)
+  green:
+    green_5: "#09251a"
+    green_10: "#104631"
+    green_20: "#176345"
+    green_30: "#20885f"
+    green_40: "#28a976"
+    green_50: "#2ec287"    # Primary Green
+    green_60: "#45d39a"
+    green_70: "#73deb3"
+    green_80: "#a0e9cc"
+    green_90: "#cdf3e4"
+    green_95: "#eafaf4"
+
+# ============================================================
+# 타이포그래피 토큰 (Typography Tokens)
+# ============================================================
+# 사용법: import { typography } from '@qanda/qds4-web/Typography'
+# 예시: <p className={typography('body_1')}>텍스트</p>
+# ============================================================
+typography_tokens:
+  # 대형 타이틀
+  large_title:
+    description: "가장 큰 제목, 페이지 메인 타이틀"
+    usage: "랜딩 페이지 헤더, 주요 섹션 타이틀"
+
+  # 타이틀 계층
+  title_1_strong:
+    description: "Title 1 Bold 버전"
+    usage: "강조가 필요한 주요 제목"
+  title_1:
+    description: "주요 섹션 제목"
+    usage: "페이지 섹션 타이틀"
+  title_2_strong:
+    description: "Title 2 Bold 버전"
+    usage: "강조가 필요한 서브 제목"
+  title_2:
+    description: "서브 섹션 제목"
+    usage: "카드 헤더, 모달 타이틀"
+  title_3_strong:
+    description: "Title 3 Bold 버전"
+    usage: "강조가 필요한 소제목"
+  title_3:
+    description: "소제목"
+    usage: "리스트 아이템 타이틀"
+
+  # 본문 텍스트
+  body_1_strong:
+    description: "Body 1 Bold 버전"
+    usage: "강조가 필요한 본문"
+  body_1:
+    description: "기본 본문 텍스트"
+    usage: "일반 본문 내용"
+  body_2_strong:
+    description: "Body 2 Bold 버전"
+    usage: "강조가 필요한 작은 본문"
+  body_2:
+    description: "작은 본문 텍스트"
+    usage: "보조 설명, 서브텍스트"
+
+  # 캡션
+  caption_1:
+    description: "캡션 텍스트"
+    usage: "라벨, 힌트 텍스트"
+  caption_2:
+    description: "가장 작은 캡션"
+    usage: "타임스탬프, 메타 정보"
+
+# ============================================================
+# 브레이크포인트 (Breakpoints)
+# ============================================================
+# 사용법: import { BREAKPOINT } from '@qanda/qds4-web/base.ts'
+# ============================================================
+breakpoints:
+  SMALL: "360px"       # 모바일
+  MEDIUM: "640px"      # 태블릿
+  LARGE: "1200px"      # 데스크톱
+  EXTRA_LARGE: "1600px" # 대형 화면
+
+# ============================================================
+# 컴포넌트 레퍼런스 (Component Reference)
+# ============================================================
+# UI 스펙 작성 시 아래 컴포넌트만 사용해야 합니다.
+# 커스텀 컴포넌트 생성 시에도 이 컴포넌트들을 조합하여 구성합니다.
+# ============================================================
+components:
+  # ----------------------------------------------------------
+  # 버튼 (Buttons)
+  # ----------------------------------------------------------
+  Button:
+    import: "@qanda/qds4-web/Button"
+    description: "기본 버튼 컴포넌트"
+    props:
+      variant:
+        type: "'neutral' | 'accent' | 'danger' | 'tonal' | 'outlined'"
+        required: true
+        description: "버튼 스타일 변형"
+      size:
+        type: "'l' | 'm' | 's' | 'xs'"
+        required: true
+        description: "버튼 크기"
+      children:
+        type: "string | number | null"
+        required: false
+        description: "버튼 텍스트"
+      Icon:
+        type: "Icon component"
+        required: false
+        description: "버튼 아이콘"
+      loading:
+        type: "boolean"
+        required: false
+        description: "로딩 상태"
+      disabled:
+        type: "boolean"
+        required: false
+        description: "비활성화 상태"
+      onClick:
+        type: "() => unknown"
+        required: false
+        description: "클릭 핸들러"
+    usage_example: |
+      <Button variant="accent" size="m" onClick={handleClick}>
+        확인
+      </Button>
+
+  TextButton:
+    import: "@qanda/qds4-web/TextButton"
+    description: "텍스트 버튼 (링크 스타일)"
+    props:
+      children:
+        type: "string"
+        required: true
+        description: "버튼 텍스트"
+      size:
+        type: "'m' | 's'"
+        required: true
+        description: "버튼 크기"
+      showChevron:
+        type: "boolean"
+        required: false
+        description: "화살표 아이콘 표시"
+      disabled:
+        type: "boolean"
+        required: false
+        description: "비활성화 상태"
+
+  IconButton:
+    import: "@qanda/qds4-web/IconButton"
+    description: "아이콘 전용 버튼"
+    props:
+      Icon:
+        type: "Icon component"
+        required: true
+        description: "표시할 아이콘"
+      iconSize:
+        type: "24 | 20 | 16"
+        required: true
+        description: "아이콘 크기"
+      style:
+        type: "'clear' | 'border'"
+        required: true
+        description: "버튼 스타일"
+      disabled:
+        type: "boolean"
+        required: false
+        description: "비활성화 상태"
+
+  FloatingActionButton:
+    import: "@qanda/qds4-web/FloatingActionButton"
+    description: "플로팅 액션 버튼 (FAB)"
+    props:
+      color:
+        type: "'neutral' | 'accent'"
+        required: true
+        description: "버튼 색상"
+      Icon:
+        type: "Icon component"
+        required: true
+        description: "표시할 아이콘"
+      extended:
+        type: "boolean"
+        required: false
+        description: "확장형 FAB 여부"
+      label:
+        type: "string"
+        required: false
+        description: "확장형 FAB 라벨 (extended=true 시 필수)"
+
+  # ----------------------------------------------------------
+  # 폼 요소 (Form Elements)
+  # ----------------------------------------------------------
+  Checkbox:
+    import: "@qanda/qds4-web/Checkbox"
+    description: "체크박스"
+    props:
+      state:
+        type: "'unselected' | 'indeterminate' | 'selected'"
+        required: true
+        description: "체크 상태"
+      onClick:
+        type: "() => void"
+        required: true
+        description: "클릭 핸들러"
+      disabled:
+        type: "boolean"
+        required: false
+        description: "비활성화 상태"
+
+  Checkmark:
+    import: "@qanda/qds4-web/Checkmark"
+    description: "체크마크 (토글)"
+    props:
+      checked:
+        type: "boolean"
+        required: true
+        description: "체크 상태"
+      onChange:
+        type: "(newChecked: boolean) => void"
+        required: true
+        description: "변경 핸들러"
+      disabled:
+        type: "boolean"
+        required: false
+        description: "비활성화 상태"
+
+  Radio:
+    import: "@qanda/qds4-web/Radio"
+    description: "라디오 버튼"
+    props:
+      name:
+        type: "string"
+        required: true
+        description: "라디오 그룹 이름"
+      value:
+        type: "string"
+        required: true
+        description: "라디오 값"
+      selectedValue:
+        type: "string | null"
+        required: true
+        description: "현재 선택된 값"
+      onChange:
+        type: "(value: string) => void"
+        required: true
+        description: "변경 핸들러"
+      disabled:
+        type: "boolean"
+        required: false
+        description: "비활성화 상태"
+
+  Switch:
+    import: "@qanda/qds4-web/Switch"
+    description: "스위치 토글"
+    props:
+      checked:
+        type: "boolean"
+        required: true
+        description: "토글 상태"
+      onChange:
+        type: "(newChecked: boolean) => void"
+        required: true
+        description: "변경 핸들러"
+      disabled:
+        type: "boolean"
+        required: false
+        description: "비활성화 상태"
+
+  # ----------------------------------------------------------
+  # 네비게이션 (Navigation)
+  # ----------------------------------------------------------
+  TopAppBar:
+    import: "@qanda/qds4-web/TopAppBar"
+    description: "상단 앱바 / 헤더"
+    props:
+      main:
+        type: "ReactNode"
+        required: true
+        description: "제목 영역"
+      leading:
+        type: "ReactNode"
+        required: false
+        description: "좌측 아이콘 영역"
+      trailing:
+        type: "ReactNode"
+        required: false
+        description: "우측 아이콘 영역"
+      elevation:
+        type: "'on-scroll' | 'flat'"
+        required: false
+        default: "'on-scroll'"
+        description: "상단 고정 여부"
+      position:
+        type: "'sticky' | 'fixed'"
+        required: false
+        default: "'sticky'"
+        description: "포지션 타입"
+      size:
+        type: "'s' | 'm'"
+        required: false
+        default: "'s'"
+        description: "앱바 크기"
+
+  Tabs:
+    import: "@qanda/qds4-web/Tabs"
+    description: "탭 네비게이션"
+    props:
+      value:
+        type: "number | string"
+        required: true
+        description: "현재 선택된 탭 값"
+      onChange:
+        type: "(value) => void"
+        required: true
+        description: "탭 변경 핸들러"
+      tabs:
+        type: "array"
+        required: true
+        description: "탭 목록 (type: 'icon' | 'label')"
+      type:
+        type: "'scrollable' | 'fixed'"
+        required: true
+        description: "탭 레이아웃 타입"
+      size:
+        type: "'m' | 's'"
+        required: true
+        description: "탭 크기"
+
+  SegmentedControl:
+    import: "@qanda/qds4-web/SegmentedControl"
+    description: "세그먼트 컨트롤"
+    props:
+      value:
+        type: "number | string"
+        required: true
+        description: "현재 선택된 값"
+      onChange:
+        type: "(value) => void"
+        required: true
+        description: "변경 핸들러"
+      segments:
+        type: "{ value, label }[]"
+        required: true
+        description: "세그먼트 목록"
+      size:
+        type: "'m' | 's'"
+        required: true
+        description: "컨트롤 크기"
+
+  # ----------------------------------------------------------
+  # 다이얼로그 & 오버레이 (Dialogs & Overlays)
+  # ----------------------------------------------------------
+  AlertDialog:
+    import: "@qanda/qds4-web/AlertDialog"
+    description: "알림 다이얼로그"
+    props:
+      title:
+        type: "string"
+        required: true
+        description: "다이얼로그 제목"
+      isOpen:
+        type: "boolean"
+        required: true
+        description: "열림 상태"
+      confirmButton:
+        type: "{ text, onClick, loading? }"
+        required: true
+        description: "확인 버튼"
+      cancelButton:
+        type: "{ text, onClick }"
+        required: false
+        description: "취소 버튼"
+      Icon:
+        type: "Icon component"
+        required: false
+        description: "제목 위 아이콘"
+      destructive:
+        type: "boolean"
+        required: false
+        default: "false"
+        description: "위험 동작 여부 (빨간색)"
+      alignment:
+        type: "'horizontal' | 'vertical'"
+        required: false
+        default: "'horizontal'"
+        description: "버튼 정렬 방향"
+
+  StandardDialog:
+    import: "@qanda/qds4-web/StandardDialog"
+    description: "표준 다이얼로그"
+    props:
+      size:
+        type: "'s' | 'm' | 'l'"
+        required: true
+        description: "다이얼로그 크기"
+      isOpen:
+        type: "boolean"
+        required: true
+        description: "열림 상태"
+      onClose:
+        type: "() => void"
+        required: true
+        description: "닫기 핸들러"
+      title:
+        type: "string"
+        required: false
+        description: "다이얼로그 제목"
+      Icon:
+        type: "Icon component"
+        required: false
+        description: "제목 위 아이콘"
+      footer:
+        type: "ReactNode"
+        required: false
+        description: "하단 영역"
+
+  FullScreenDialog:
+    import: "@qanda/qds4-web/FullScreenDialog"
+    description: "전체 화면 다이얼로그"
+    props:
+      isOpen:
+        type: "boolean"
+        required: true
+        description: "열림 상태"
+      onClose:
+        type: "() => void"
+        required: true
+        description: "닫기 핸들러 (null이면 X버튼 숨김)"
+
+  BottomSheet:
+    import: "@qanda/qds4-web/BottomSheet"
+    description: "바텀 시트"
+    props:
+      title:
+        type: "string"
+        required: true
+        description: "시트 제목"
+      isOpen:
+        type: "boolean"
+        required: true
+        description: "열림 상태"
+      onClose:
+        type: "() => void"
+        required: true
+        description: "닫기 핸들러"
+      description:
+        type: "string"
+        required: false
+        description: "시트 설명"
+      footer:
+        type: "ReactNode"
+        required: false
+        description: "하단 고정 영역"
+
+  # ----------------------------------------------------------
+  # 피드백 (Feedback)
+  # ----------------------------------------------------------
+  Spinner:
+    import: "@qanda/qds4-web/Spinner"
+    description: "로딩 스피너"
+    props:
+      size:
+        type: "number"
+        required: false
+        description: "스피너 크기"
+
+  LoadingAnimation:
+    import: "@qanda/qds4-web/LoadingAnimation"
+    description: "로딩 애니메이션"
+    props:
+      size:
+        type: "number"
+        required: false
+        description: "애니메이션 크기"
+
+  Badge:
+    import: "@qanda/qds4-web/Badge"
+    description: "뱃지"
+    props:
+      size:
+        type: "'s' | 'm'"
+        required: true
+        description: "뱃지 크기"
+      type:
+        type: "'new' | 'digit'"
+        required: false
+        description: "뱃지 타입 (size='m' 시)"
+      digit:
+        type: "number"
+        required: false
+        description: "숫자 표시 (type='digit' 시)"
+
+  Tag:
+    import: "@qanda/qds4-web/Tag"
+    description: "태그"
+    props:
+      children:
+        type: "string"
+        required: true
+        description: "태그 텍스트"
+      color:
+        type: "'gray' | 'blue' | 'orange' | 'red' | 'yellow' | 'green'"
+        required: true
+        description: "태그 색상"
+      style:
+        type: "'filled' | 'tonal'"
+        required: true
+        description: "태그 스타일"
+
+  # ----------------------------------------------------------
+  # 레이아웃 (Layout)
+  # ----------------------------------------------------------
+  BottomFixedArea:
+    import: "@qanda/qds4-web/BottomFixedArea"
+    description: "하단 고정 영역"
+    props:
+      position:
+        type: "'sticky' | 'fixed'"
+        required: false
+        default: "'sticky'"
+        description: "포지션 타입"
+      applySafeArea:
+        type: "boolean"
+        required: false
+        default: "true"
+        description: "Safe Area 적용 여부"
+      safeAreaColor:
+        type: "COLOR key | 'transparent'"
+        required: false
+        description: "Safe Area 배경색"
+    subcomponents:
+      - name: "BottomFixedArea.FloatingActionButtonStack"
+        description: "FAB 스택 컨테이너"
+        props:
+          position: "'center' | 'right'"
+      - name: "BottomFixedArea.CustomStack"
+        description: "커스텀 스택 컨테이너"
+        props:
+          backgroundColor: "COLOR key | 'transparent'"
+
+  Divider:
+    import: "@qanda/qds4-web/Divider"
+    description: "구분선"
+    props: {}
+
+  # ----------------------------------------------------------
+  # 아이콘 & 유틸리티 (Icons & Utilities)
+  # ----------------------------------------------------------
+  Icon:
+    import: "@qanda/qds4-web/Icon"
+    description: "아이콘 래퍼"
+    props:
+      size:
+        type: "number"
+        required: false
+        description: "아이콘 크기"
+      color:
+        type: "COLOR key"
+        required: false
+        description: "아이콘 색상"
+    usage_example: |
+      <Icon size={24} color="blue_50">
+        <IconHomeOutlined />
+      </Icon>
+
+  # ----------------------------------------------------------
+  # 스타일 유틸리티 (Style Utilities)
+  # ----------------------------------------------------------
+  Typography:
+    import: "@qanda/qds4-web/Typography"
+    description: "타이포그래피 CSS 클래스 생성"
+    type: "function"
+    signature: "(key: TypographyKey) => string"
+    usage_example: |
+      <p className={typography('body_1')}>본문 텍스트</p>
+
+  Shadow:
+    import: "@qanda/qds4-web/Shadow"
+    description: "그림자 CSS 클래스 생성"
+    type: "function"
+    signature: "(key: 1 | 2) => string"
+    usage_example: |
+      <div className={shadow(1)}>그림자 레벨 1</div>
+
+  StateLayer:
+    import: "@qanda/qds4-web/StateLayer"
+    description: "상태 레이어 CSS 클래스 생성 (hover, pressed 등)"
+    type: "function"
+    signature: "(options?: { position: 'relative' | 'absolute' | 'fixed' }) => string"
+
+  # ----------------------------------------------------------
+  # 프로바이더 (Provider)
+  # ----------------------------------------------------------
+  DesignSystemProvider:
+    import: "@qanda/qds4-web/DesignSystemProvider"
+    description: "디자인 시스템 프로바이더 (앱 루트에 필수)"
+    props:
+      qds4Root:
+        type: "HTMLElement | null"
+        required: true
+        description: "QDS4 루트 엘리먼트"
+      portalRoot:
+        type: "HTMLElement | null"
+        required: true
+        description: "포탈 루트 엘리먼트"
+    usage_example: |
+      <DesignSystemProvider qds4Root={rootEl} portalRoot={portalEl}>
+        <App />
+      </DesignSystemProvider>
+
+# ============================================================
+# 사용 규칙 (Usage Rules)
+# ============================================================
+usage_rules:
+  # 필수 규칙
+  mandatory:
+    - "UI 구현 시 반드시 @qanda/qds4-web 컴포넌트만 사용"
+    - "색상은 반드시 COLOR 토큰 사용 (하드코딩 금지)"
+    - "타이포그래피는 반드시 typography() 함수 사용"
+    - "앱 루트에 DesignSystemProvider 필수 설정"
+    - "base.css를 전역으로 import 필수"
+
+  # 권장 규칙
+  recommended:
+    - "브레이크포인트는 BREAKPOINT 상수 사용"
+    - "그림자는 shadow() 함수 사용"
+    - "인터랙티브 요소에 StateLayer 적용 고려"
+
+  # 금지 규칙
+  prohibited:
+    - "임의의 색상값 (#000000 등) 직접 사용 금지"
+    - "CSS로 직접 font-size, font-weight 등 지정 금지"
+    - "shadcn/ui 등 다른 UI 라이브러리 사용 금지"
+    - "커스텀 버튼, 다이얼로그 등 직접 구현 금지"
+
+# ============================================================
+# 설정 가이드 (Setup Guide)
+# ============================================================
+setup:
+  installation: |
+    pnpm add @qanda/qds4-web
+
+  nextjs_setup: |
+    // app/layout.tsx
+    import '@qanda/qds4-web/base.css';
+    import { DesignSystemProvider } from '@qanda/qds4-web/DesignSystemProvider';
+
+    export default function RootLayout({ children }) {
+      return (
+        <html>
+          <body>
+            <DesignSystemProvider
+              qds4Root={typeof document !== 'undefined' ? document.body : null}
+              portalRoot={typeof document !== 'undefined' ? document.body : null}
+            >
+              {children}
+            </DesignSystemProvider>
+          </body>
+        </html>
+      );
+    }
+
+  import_pattern: |
+    // 개별 컴포넌트 import
+    import { Button } from '@qanda/qds4-web/Button';
+    import { typography } from '@qanda/qds4-web/Typography';
+    import { COLOR, BREAKPOINT } from '@qanda/qds4-web/base.ts';

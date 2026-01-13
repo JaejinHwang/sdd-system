@@ -239,23 +239,60 @@ technical_spec:
 
 기능 명세를 기반으로 필요한 화면과 컴포넌트를 도출합니다.
 
+> **⚠️ 중요: 디자인 시스템 사용 필수**
+>
+> 모든 UI는 반드시 **@qanda/qds4-web** 디자인 시스템만 사용해야 합니다.
+> - 공식 문서: https://github.com/mathpresso/qanda-design-system-docs
+> - 데모 페이지: https://mathpresso.github.io/qanda-design-system-docs
+> - 로컬 레퍼런스: `templates/design-system/qds4-web.yaml`
+
+**디자인 시스템 규칙:**
+| 항목 | 필수 사항 |
+|------|----------|
+| 컴포넌트 | qds4-web 컴포넌트만 사용 (Button, TopAppBar, BottomSheet 등) |
+| 색상 | COLOR 토큰만 사용 (예: blue_50, gray_100) - 하드코딩 금지 |
+| 타이포그래피 | typography() 함수만 사용 (예: body_1, title_2) |
+| 브레이크포인트 | BREAKPOINT 상수 사용 (SMALL, MEDIUM, LARGE, EXTRA_LARGE) |
+| 금지 | shadcn/ui, MUI 등 다른 UI 라이브러리 사용 금지 |
+
+**사용 가능한 컴포넌트:**
+- **버튼**: Button, TextButton, IconButton, FloatingActionButton
+- **폼**: Checkbox, Checkmark, Radio, Switch
+- **네비게이션**: TopAppBar, Tabs, SegmentedControl
+- **다이얼로그**: AlertDialog, StandardDialog, FullScreenDialog, BottomSheet
+- **피드백**: Spinner, LoadingAnimation, Badge, Tag
+- **레이아웃**: BottomFixedArea, Divider
+- **유틸리티**: Icon, Typography, Shadow, StateLayer
+
 **도출 규칙:**
 1. 각 Feature의 states를 UI 상태로 매핑
 2. 각 Feature의 inputs를 폼/입력 컴포넌트로 매핑
 3. 각 Feature의 error_cases를 에러 UI로 매핑
+4. **컴포넌트 type은 qds4-web 컴포넌트명 사용**
 ```yaml
 ui_spec:
-  design_tokens:
-    colors:
-      primary: "#[색상]"
-      secondary: "#[색상]"
-      error: "#EF4444"
-    spacing:
-      unit: "4px"
+  # 디자인 시스템 정보 (필수)
+  design_system:
+    package: "@qanda/qds4-web"
+    version: "^0.0.2"
+    reference: "templates/design-system/qds4-web.yaml"
+
+    # 프로젝트에서 사용할 색상 매핑 (COLOR 토큰만 사용)
+    color_palette:
+      primary: "blue_50"
+      secondary: "gray_60"
+      error: "red_50"
+      warning: "orange_50"
+      success: "green_50"
+      background: "gray_100"
+      text_primary: "gray_10"
+
+    # 사용할 브레이크포인트
     breakpoints:
-      mobile: "640px"
-      tablet: "768px"
-      desktop: "1024px"
+      SMALL: "360px"
+      MEDIUM: "640px"
+      LARGE: "1200px"
+      EXTRA_LARGE: "1600px"
 
   screens:
     - id: "SCR-001"
@@ -264,24 +301,37 @@ ui_spec:
       description: "[화면 설명]"
       implements_features: ["F-001", "F-002"]
       
+      # 컴포넌트는 qds4-web 컴포넌트만 사용
       components:
-        - id: "[컴포넌트 ID]"
-          type: "[컴포넌트 타입]"
-          description: "[설명]"
-          
+        - id: "submit-btn"
+          type: "Button"  # qds4-web 컴포넌트명
+          description: "제출 버튼"
+
+          # props는 qds4-web 컴포넌트 props 참조
           props:
-            "[prop명]": "[타입]"
-          
+            variant: "accent"  # neutral|accent|danger|tonal|outlined
+            size: "m"          # l|m|s|xs
+            children: "제출"
+
           states:
             - name: "default"
-              appearance: "[기본 모습]"
-              behavior: "[기본 동작]"
+              appearance: "accent 색상, 활성화 상태"
+              behavior: "클릭 시 폼 제출"
             - name: "loading"
-              appearance: "[로딩 모습]"
-              behavior: "[로딩 동작]"
-            - name: "error"
-              appearance: "[에러 모습]"
-              behavior: "[에러 동작]"
+              appearance: "loading=true, 스피너 표시"
+              behavior: "클릭 비활성화"
+            - name: "disabled"
+              appearance: "disabled=true, 비활성화 스타일"
+              behavior: "클릭 불가"
+
+        - id: "confirm-dialog"
+          type: "AlertDialog"  # qds4-web 다이얼로그
+          description: "확인 다이얼로그"
+
+          props:
+            title: "확인"
+            confirmButton: { text: "확인", onClick: "handleConfirm" }
+            cancelButton: { text: "취소", onClick: "handleCancel" }
       
       interactions:
         - trigger: "[사용자 액션]"

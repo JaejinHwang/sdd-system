@@ -25,7 +25,11 @@ stack:
     version: "14.x"
     language: "TypeScript"
     styling: "Tailwind CSS"
-    ui_components: "shadcn/ui"
+    # 디자인 시스템: @qanda/qds4-web (회사 공식 디자인 시스템)
+    # 공식 문서: https://github.com/mathpresso/qanda-design-system-docs
+    # 데모 페이지: https://mathpresso.github.io/qanda-design-system-docs
+    ui_components: "@qanda/qds4-web"
+    design_system_reference: "templates/design-system/qds4-web.yaml"
     state_management: "Zustand"
     
   # 백엔드
@@ -109,7 +113,8 @@ dependencies:
     zustand: "^4.0.0"
     zod: "^3.0.0"
     tailwindcss: "^3.0.0"
-    "lucide-react": "^0.300.0"
+    # 디자인 시스템 (필수)
+    "@qanda/qds4-web": "^0.0.2"
     
   development:
     typescript: "^5.0.0"
@@ -163,13 +168,46 @@ default_adrs:
     title: "프레임워크 선택: Next.js"
     decision: "Next.js 14 (App Router)"
     reason: "SSR/SSG 지원, API Routes 내장, Vercel 최적화"
-    
+
   - id: "ADR-002"
     title: "데이터베이스 선택: Supabase"
     decision: "Supabase (PostgreSQL)"
     reason: "무료 티어, 인증 내장, 실시간 구독, 빠른 설정"
-    
+
   - id: "ADR-003"
     title: "AI 모델 선택: Claude"
     decision: "Claude claude-sonnet-4-20250514"
     reason: "긴 컨텍스트, 비용 효율, 코드/문서 품질"
+
+  - id: "ADR-004"
+    title: "디자인 시스템 선택: QDS4"
+    decision: "@qanda/qds4-web"
+    reason: "회사 공식 디자인 시스템, 일관된 UI/UX, 접근성 내장, 디자인-개발 협업 효율"
+    constraints:
+      - "모든 UI 컴포넌트는 qds4-web 컴포넌트만 사용"
+      - "색상은 COLOR 토큰만 사용 (하드코딩 금지)"
+      - "타이포그래피는 typography() 함수만 사용"
+      - "shadcn/ui 등 다른 UI 라이브러리 사용 금지"
+    reference: "templates/design-system/qds4-web.yaml"
+
+# ============================================================
+# 디자인 시스템 사용 규칙
+# ============================================================
+design_system_rules:
+  mandatory:
+    - "앱 루트에 DesignSystemProvider 필수 설정"
+    - "전역으로 @qanda/qds4-web/base.css import 필수"
+    - "UI 컴포넌트는 qds4-web 컴포넌트만 사용"
+    - "색상은 COLOR 토큰만 사용"
+    - "타이포그래피는 typography() 함수만 사용"
+
+  prohibited:
+    - "임의의 색상값 직접 사용 금지"
+    - "CSS로 직접 font-size, font-weight 지정 금지"
+    - "shadcn/ui, MUI, Chakra 등 다른 UI 라이브러리 사용 금지"
+    - "커스텀 버튼, 다이얼로그 직접 구현 금지"
+
+  reference_docs:
+    - "공식 문서: https://github.com/mathpresso/qanda-design-system-docs"
+    - "데모 페이지: https://mathpresso.github.io/qanda-design-system-docs"
+    - "로컬 레퍼런스: templates/design-system/qds4-web.yaml"

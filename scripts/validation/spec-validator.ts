@@ -509,6 +509,57 @@ function validateTechnicalSpec(data: TechnicalSpec, result: ValidationResult): v
 // UI Spec 검증
 // ============================================================
 
+// QDS4 디자인 시스템에서 허용된 컴포넌트 목록
+const QDS4_ALLOWED_COMPONENTS = new Set([
+  // Buttons
+  'Button', 'TextButton', 'IconButton', 'FloatingActionButton',
+  // Forms
+  'Checkbox', 'Checkmark', 'Radio', 'Switch',
+  // Navigation
+  'TopAppBar', 'Tabs', 'SegmentedControl',
+  // Dialogs
+  'AlertDialog', 'StandardDialog', 'FullScreenDialog', 'BottomSheet',
+  // Feedback
+  'Spinner', 'LoadingAnimation', 'Badge', 'Tag',
+  // Layout
+  'BottomFixedArea', 'Divider',
+  // Utilities
+  'Icon', 'Typography', 'Shadow', 'StateLayer', 'DesignSystemProvider',
+]);
+
+// QDS4 COLOR 토큰 목록
+const QDS4_COLOR_TOKENS = new Set([
+  // Gray scale
+  'gray_0', 'gray_5', 'gray_10', 'gray_20', 'gray_30', 'gray_40',
+  'gray_50', 'gray_60', 'gray_70', 'gray_80', 'gray_90', 'gray_95', 'gray_100',
+  // Blue
+  'blue_5', 'blue_10', 'blue_20', 'blue_30', 'blue_40', 'blue_50',
+  'blue_60', 'blue_70', 'blue_80', 'blue_90', 'blue_95',
+  // Orange
+  'orange_5', 'orange_10', 'orange_20', 'orange_30', 'orange_40', 'orange_50',
+  'orange_60', 'orange_70', 'orange_80', 'orange_90', 'orange_95',
+  // Red
+  'red_5', 'red_10', 'red_20', 'red_30', 'red_40', 'red_50',
+  'red_60', 'red_70', 'red_80', 'red_90', 'red_95',
+  // Yellow
+  'yellow_5', 'yellow_10', 'yellow_20', 'yellow_30', 'yellow_40', 'yellow_50',
+  'yellow_60', 'yellow_70', 'yellow_80', 'yellow_90', 'yellow_95',
+  // Green
+  'green_5', 'green_10', 'green_20', 'green_30', 'green_40', 'green_50',
+  'green_60', 'green_70', 'green_80', 'green_90', 'green_95',
+]);
+
+// QDS4 Typography 토큰 목록
+const QDS4_TYPOGRAPHY_TOKENS = new Set([
+  'large_title',
+  'title_1_strong', 'title_1',
+  'title_2_strong', 'title_2',
+  'title_3_strong', 'title_3',
+  'body_1_strong', 'body_1',
+  'body_2_strong', 'body_2',
+  'caption_1', 'caption_2',
+]);
+
 function validateUiSpec(data: UiSpec, result: ValidationResult): void {
   const spec = data.ui_spec;
   if (!spec) {
@@ -519,6 +570,11 @@ function validateUiSpec(data: UiSpec, result: ValidationResult): void {
     });
     return;
   }
+
+  // ============================================================
+  // 디자인 시스템 검증
+  // ============================================================
+  validateDesignSystem(spec, result);
 
   if (!spec.screens || spec.screens.length === 0) {
     result.warnings.push({
@@ -565,6 +621,143 @@ function validateUiSpec(data: UiSpec, result: ValidationResult): void {
         message: 'implements_features가 없습니다',
         severity: 'warning',
       });
+    }
+
+    // 컴포넌트 검증 (QDS4 디자인 시스템 준수 여부)
+    if (screen.components) {
+      validateScreenComponents(screen.components, `${basePath}.components`, result);
+    }
+  });
+}
+
+// ============================================================
+// 디자인 시스템 설정 검증
+// ============================================================
+
+function validateDesignSystem(spec: any, result: ValidationResult): void {
+  // design_system 필드 확인
+  if (!spec.design_system) {
+    result.warnings.push({
+      path: 'ui_spec.design_system',
+      message: 'design_system 필드가 없습니다. @qanda/qds4-web 사용을 명시하세요.',
+      severity: 'warning',
+      suggestion: 'design_system: { package: "@qanda/qds4-web", version: "^0.0.2" } 추가',
+    });
+    return;
+  }
+
+  const ds = spec.design_system;
+
+  // 패키지 확인
+  if (ds.package && ds.package !== '@qanda/qds4-web') {
+    result.errors.push({
+      path: 'ui_spec.design_system.package',
+      message: `허용되지 않은 디자인 시스템입니다: "${ds.package}"`,
+      severity: 'error',
+      suggestion: '@qanda/qds4-web만 사용 가능합니다',
+    });
+  }
+
+  // color_palette 검증
+  if (ds.color_palette) {
+    Object.entries(ds.color_palette).forEach(([key, value]) => {
+      if (typeof value === 'string' && !QDS4_COLOR_TOKENS.has(value)) {
+        // 하드코딩된 색상 검사 (#으로 시작하는 경우)
+        if (value.startsWith('#')) {
+          result.errors.push({
+            path: `ui_spec.design_system.color_palette.${key}`,
+            message: `하드코딩된 색상값 사용 금지: "${value}"`,
+            severity: 'error',
+            suggestion: 'COLOR 토큰을 사용하세요 (예: blue_50, gray_100)',
+          });
+        } else if (!QDS4_COLOR_TOKENS.has(value)) {
+          result.warnings.push({
+            path: `ui_spec.design_system.color_palette.${key}`,
+            message: `알 수 없는 색상 토큰: "${value}"`,
+            severity: 'warning',
+            suggestion: 'qds4-web.yaml의 color_tokens 참조',
+          });
+        }
+      }
+    });
+  }
+}
+
+// ============================================================
+// 화면 컴포넌트 검증 (QDS4 준수)
+// ============================================================
+
+function validateScreenComponents(
+  components: any[],
+  basePath: string,
+  result: ValidationResult
+): void {
+  components.forEach((component, index) => {
+    const compPath = `${basePath}[${index}]`;
+
+    // type 필드 검증 (QDS4 컴포넌트만 허용)
+    if (component.type) {
+      if (!QDS4_ALLOWED_COMPONENTS.has(component.type)) {
+        // 일반적인 HTML 요소가 아닌 경우에만 경고
+        const htmlElements = ['div', 'span', 'form', 'input', 'section', 'header', 'footer', 'nav', 'main', 'article'];
+        if (!htmlElements.includes(component.type.toLowerCase())) {
+          result.errors.push({
+            path: `${compPath}.type`,
+            message: `허용되지 않은 컴포넌트입니다: "${component.type}"`,
+            severity: 'error',
+            suggestion: `@qanda/qds4-web 컴포넌트만 사용하세요. 허용된 컴포넌트: Button, TopAppBar, BottomSheet 등`,
+          });
+        }
+      }
+    }
+
+    // props에서 색상값 검증
+    if (component.props) {
+      validateComponentProps(component.props, `${compPath}.props`, result);
+    }
+
+    // 중첩된 컴포넌트가 있는 경우 재귀적으로 검증
+    if (component.children && Array.isArray(component.children)) {
+      validateScreenComponents(component.children, `${compPath}.children`, result);
+    }
+  });
+}
+
+// ============================================================
+// 컴포넌트 Props 검증
+// ============================================================
+
+function validateComponentProps(
+  props: Record<string, any>,
+  basePath: string,
+  result: ValidationResult
+): void {
+  Object.entries(props).forEach(([key, value]) => {
+    // 색상 관련 props 검증
+    if (['color', 'backgroundColor', 'borderColor', 'textColor'].includes(key)) {
+      if (typeof value === 'string') {
+        // 하드코딩된 색상 검사
+        if (value.startsWith('#') || value.startsWith('rgb')) {
+          result.errors.push({
+            path: `${basePath}.${key}`,
+            message: `하드코딩된 색상값 사용 금지: "${value}"`,
+            severity: 'error',
+            suggestion: 'COLOR 토큰을 사용하세요 (예: blue_50, gray_100)',
+          });
+        }
+      }
+    }
+
+    // typography 관련 검증
+    if (key === 'typography' && typeof value === 'string') {
+      if (!QDS4_TYPOGRAPHY_TOKENS.has(value)) {
+        result.warnings.push({
+          path: `${basePath}.${key}`,
+          message: `알 수 없는 타이포그래피 토큰: "${value}"`,
+          severity: 'warning',
+          suggestion: 'typography() 함수와 유효한 토큰 사용 (예: body_1, title_2)',
+        });
+      }
     }
   });
 }
