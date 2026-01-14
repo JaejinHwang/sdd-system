@@ -1,0 +1,352 @@
+# ============================================================
+# Clarification Taxonomy (모호성 분류 체계)
+# ============================================================
+# 목적: Feature 작성 시 모호한 부분을 체계적으로 감지하고
+#       사용자에게 질문하여 명확화
+# 참조: speckit.clarify 패턴 기반
+# ============================================================
+
+clarification:
+  # 질문 제한
+  limits:
+    max_questions_per_feature: 5
+
+  # 질문 우선순위 결정 공식
+  prioritization:
+    formula: "Impact x Uncertainty"
+    impact_levels:
+      high: "구현 방향이 완전히 달라짐"
+      medium: "일부 구현 세부사항이 달라짐"
+      low: "미미한 차이"
+    uncertainty_levels:
+      high: "전혀 언급 없음 (Missing)"
+      medium: "일부만 언급 (Partial)"
+      low: "대부분 명확 (Almost Clear)"
+
+  # 모호성 분류 체계 (Taxonomy)
+  taxonomy:
+    # 1. 렌더링 및 표시 방식
+    - id: "CAT-001"
+      name: "Rendering & Display"
+      description: "시각적 출력이 있는 기능의 렌더링 방식"
+
+      detection_signals:
+        keywords: ["뷰어", "viewer", "표시", "렌더링", "보여", "display", "render"]
+        patterns:
+          - "~을/를 보여준다"
+          - "~을/를 표시한다"
+          - "~뷰어"
+
+      ambiguity_indicators:
+        - "렌더링 방식이 명시되지 않음"
+        - "'보여준다'만 있고 어떻게 보여줄지 없음"
+        - "원본 vs 가공 데이터 구분 없음"
+
+      clarification_questions:
+        - question: "렌더링 방식"
+          typical_options:
+            - "원본 파일을 그대로 표시 (예: PDF.js, 이미지 뷰어)"
+            - "파일에서 추출/파싱한 데이터를 표시"
+            - "AI가 생성/변환한 콘텐츠를 표시"
+          impact: "high"
+
+        - question: "표시 위치"
+          typical_options:
+            - "인라인 (현재 화면 내)"
+            - "새 창/탭"
+            - "모달/오버레이"
+          impact: "medium"
+
+    # 2. 데이터 소스 및 흐름
+    - id: "CAT-002"
+      name: "Data Source & Flow"
+      description: "데이터의 출처와 흐름 방식"
+
+      detection_signals:
+        keywords: ["가져오", "fetch", "load", "데이터", "조회", "불러"]
+        patterns:
+          - "~을/를 가져온다"
+          - "~을/를 조회한다"
+          - "데이터를 ~한다"
+
+      ambiguity_indicators:
+        - "데이터 출처가 불명확"
+        - "실시간 vs 캐시 구분 없음"
+        - "동기화 방식 미정의"
+
+      clarification_questions:
+        - question: "데이터 출처"
+          typical_options:
+            - "서버 API에서 실시간 조회"
+            - "로컬 캐시/스토리지에서 조회"
+            - "서버 우선, 실패 시 캐시 폴백"
+          impact: "high"
+
+        - question: "데이터 갱신 방식"
+          typical_options:
+            - "사용자 액션 시에만 갱신"
+            - "주기적 자동 갱신 (polling)"
+            - "실시간 동기화 (websocket/SSE)"
+          impact: "medium"
+
+    # 3. 상태 저장 방식
+    - id: "CAT-003"
+      name: "State Persistence"
+      description: "상태/데이터의 저장 위치와 지속성"
+
+      detection_signals:
+        keywords: ["저장", "save", "persist", "기억", "유지", "keep", "store"]
+        patterns:
+          - "~을/를 저장한다"
+          - "상태를 ~한다"
+          - "~을/를 기억한다"
+
+      ambiguity_indicators:
+        - "저장 위치 미지정"
+        - "지속성 범위 불명확 (세션/영구)"
+        - "동기화 필요 여부 미정의"
+
+      clarification_questions:
+        - question: "저장 위치"
+          typical_options:
+            - "서버 데이터베이스 (영구 저장)"
+            - "브라우저 로컬 스토리지 (기기별)"
+            - "세션 스토리지 (탭 종료 시 삭제)"
+            - "메모리만 (새로고침 시 초기화)"
+          impact: "high"
+
+        - question: "다중 기기 동기화"
+          typical_options:
+            - "필요 (서버 동기화)"
+            - "불필요 (기기별 독립)"
+          impact: "medium"
+
+    # 4. 사용자 인터랙션 방식
+    - id: "CAT-004"
+      name: "User Interaction"
+      description: "사용자 입력 및 인터랙션 세부사항"
+
+      detection_signals:
+        keywords: ["입력", "선택", "클릭", "드래그", "업로드", "input", "select"]
+        patterns:
+          - "사용자가 ~한다"
+          - "~을/를 입력한다"
+          - "~을/를 선택한다"
+
+      ambiguity_indicators:
+        - "입력 방식 미지정"
+        - "다중 선택 가능 여부 불명확"
+        - "입력 검증 시점 미정의"
+
+      clarification_questions:
+        - question: "입력 방식"
+          typical_options:
+            - "드래그 앤 드롭"
+            - "버튼 클릭 후 파일 선택"
+            - "둘 다 지원"
+          impact: "medium"
+
+        - question: "선택 방식"
+          typical_options:
+            - "단일 선택만 가능"
+            - "다중 선택 가능"
+          impact: "medium"
+
+        - question: "입력 검증 시점"
+          typical_options:
+            - "입력 즉시 (실시간)"
+            - "제출 버튼 클릭 시"
+            - "서버 응답 후"
+          impact: "low"
+
+    # 5. 에러 복구 전략
+    - id: "CAT-005"
+      name: "Error Recovery"
+      description: "에러 발생 시 복구 전략"
+
+      detection_signals:
+        keywords: ["실패", "에러", "오류", "error", "fail", "retry", "재시도"]
+        patterns:
+          - "~에 실패하면"
+          - "에러가 발생하면"
+          - "~할 수 없으면"
+
+      ambiguity_indicators:
+        - "재시도 정책 미정의"
+        - "사용자 알림 방식 불명확"
+        - "부분 실패 처리 미정의"
+
+      clarification_questions:
+        - question: "재시도 정책"
+          typical_options:
+            - "자동 재시도 (최대 N회)"
+            - "사용자가 수동으로 재시도"
+            - "자동 재시도 후 실패 시 수동 옵션"
+          impact: "medium"
+
+        - question: "부분 실패 처리"
+          typical_options:
+            - "전체 롤백"
+            - "성공한 부분만 유지"
+            - "사용자에게 선택권 제공"
+          impact: "high"
+
+    # 6. 성능 vs 기능 트레이드오프
+    - id: "CAT-006"
+      name: "Performance Tradeoff"
+      description: "성능과 기능 간의 트레이드오프 결정"
+
+      detection_signals:
+        keywords: ["처리", "변환", "분석", "생성", "process", "convert", "analyze"]
+        patterns:
+          - "대량의 ~을/를"
+          - "~을/를 처리한다"
+          - "~을/를 변환한다"
+
+      ambiguity_indicators:
+        - "실시간 vs 배치 구분 없음"
+        - "처리량 제한 미정의"
+        - "타임아웃 정책 미정의"
+
+      clarification_questions:
+        - question: "처리 방식"
+          typical_options:
+            - "실시간 처리 (즉시 응답)"
+            - "백그라운드 처리 (완료 시 알림)"
+            - "크기에 따라 자동 선택"
+          impact: "high"
+
+        - question: "대용량 처리"
+          typical_options:
+            - "제한 없음 (시간 오래 걸려도 처리)"
+            - "용량 제한 적용"
+            - "분할 처리 (chunk)"
+          impact: "medium"
+
+    # 7. 기능 범위 경계
+    - id: "CAT-007"
+      name: "Scope Boundary"
+      description: "기능의 포함/제외 범위"
+
+      detection_signals:
+        keywords: ["관리", "지원", "처리", "manage", "support", "handle"]
+        patterns:
+          - "~을/를 관리한다"
+          - "~을/를 지원한다"
+          - "~기능"
+
+      ambiguity_indicators:
+        - "포함 범위 불명확"
+        - "제외 항목 미명시"
+        - "향후 확장 계획 불명확"
+
+      clarification_questions:
+        - question: "기능 범위"
+          typical_options:
+            - "MVP 범위만 (최소 기능)"
+            - "확장 기능 포함"
+          impact: "high"
+
+        - question: "지원 포맷/타입"
+          typical_options:
+            - "단일 포맷만 (예: PDF만)"
+            - "주요 포맷들 (예: PDF, DOCX, TXT)"
+            - "모든 포맷"
+          impact: "medium"
+
+    # 8. 외부 의존성
+    - id: "CAT-008"
+      name: "External Dependency"
+      description: "외부 서비스/API 의존성 처리"
+
+      detection_signals:
+        keywords: ["API", "서비스", "외부", "연동", "external", "integration"]
+        patterns:
+          - "~API를 호출"
+          - "~서비스와 연동"
+          - "외부 ~"
+
+      ambiguity_indicators:
+        - "오프라인 동작 미정의"
+        - "외부 서비스 장애 시 처리 미정의"
+        - "API 버전/호환성 미정의"
+
+      clarification_questions:
+        - question: "오프라인 동작"
+          typical_options:
+            - "오프라인 시 기능 비활성화"
+            - "캐시된 데이터로 제한적 동작"
+            - "오프라인 지원 필요 없음"
+          impact: "medium"
+
+        - question: "외부 서비스 장애 시"
+          typical_options:
+            - "에러 표시 후 대기"
+            - "폴백 로직 실행"
+            - "큐에 저장 후 나중에 재시도"
+          impact: "high"
+
+  # 질문하지 않는 조건
+  skip_conditions:
+    - "구현/검증에 영향 없는 사소한 디테일"
+    - "technical-spec이나 ui-spec에서 결정될 사항"
+    - "명백한 베스트 프랙티스가 있는 경우"
+    - "이미 다른 Feature에서 동일한 질문에 답변한 경우"
+
+  # 질문 형식 템플릿
+  question_format:
+    with_recommendation: |
+      **{{feature_id}} "{{feature_name}}"에 대해 확인이 필요합니다.**
+
+      📌 **{{question}}**
+
+      **Recommended:** Option {{recommended_option}} - {{recommendation_reason}}
+
+      | Option | Description |
+      |--------|-------------|
+      {{#options}}
+      | {{letter}} | {{description}} |
+      {{/options}}
+      | Short | 다른 방식 직접 입력 (5단어 이내) |
+
+      옵션 문자({{option_letters}})로 답하거나, "yes"로 추천안을 수락하세요.
+
+    without_recommendation: |
+      **{{feature_id}} "{{feature_name}}"에 대해 확인이 필요합니다.**
+
+      📌 **{{question}}**
+
+      | Option | Description |
+      |--------|-------------|
+      {{#options}}
+      | {{letter}} | {{description}} |
+      {{/options}}
+      | Short | 다른 방식 직접 입력 (5단어 이내) |
+
+      옵션 문자({{option_letters}})로 답하거나 직접 입력해주세요.
+
+  # 답변 후 스펙 반영 규칙
+  integration_rules:
+    - category: "Rendering & Display"
+      target_sections:
+        - "outputs.format"
+        - "description (렌더링 방식 명시)"
+      action: "렌더링 방식을 outputs 또는 description에 명시"
+
+    - category: "Data Source & Flow"
+      target_sections:
+        - "inputs"
+        - "description"
+      action: "데이터 출처를 inputs 또는 states에 반영"
+
+    - category: "State Persistence"
+      target_sections:
+        - "outputs"
+        - "states"
+      action: "저장 위치와 방식을 명시"
+
+    - category: "Error Recovery"
+      target_sections:
+        - "error_cases"
+        - "states (retry 관련 상태)"
+      action: "복구 전략을 error_cases에 반영"
