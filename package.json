@@ -8,7 +8,10 @@
     "validate:all": "tsx scripts/validation/spec-validator.ts --all",
     "analyze": "tsx scripts/analysis/impact-analyzer.ts",
     "trace": "tsx scripts/analysis/traceability-builder.ts",
-    "status": "tsx scripts/utils/status-reporter.ts"
+    "status": "tsx scripts/utils/status-reporter.ts",
+    "build": "tsc",
+    "build:flow": "cd apps/flow-graph && npm run build",
+    "flow:install": "cd apps/flow-graph && npm install"
   },
   "dependencies": {
     "@qanda/qds4-web": "^0.0.2",

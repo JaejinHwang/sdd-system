@@ -3,6 +3,7 @@ import { Command } from 'commander';
 import { initCommand } from './commands/init.js';
 import { newCommand } from './commands/new.js';
 import { updateCommand } from './commands/update.js';
+import { flowCommand } from './commands/flow.js';
 
 const program = new Command();
 
@@ -33,5 +34,13 @@ program
   .option('--check', '업데이트 가능 여부만 확인')
   .option('-f, --force', '백업 없이 강제 업데이트')
   .action(updateCommand);
+
+program
+  .command('flow')
+  .description('Flow Graph 시각화 웹 앱 실행')
+  .option('-p, --port <port>', '서버 포트', '3333')
+  .option('-v, --view <mode>', '뷰 모드 (engineer | journey)', 'engineer')
+  .option('--no-open', '브라우저 자동 열기 비활성화')
+  .action(flowCommand);
 
 program.parse();

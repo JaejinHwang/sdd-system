@@ -1,0 +1,185 @@
+# ============================================================
+# Flow Graph Specification (플로우 그래프 명세)
+# 시각적 플로우 구조 및 레이아웃 정보
+# ============================================================
+# 의존성: functional-spec.yaml, ui-spec.yaml
+# 용도: 그래프 UI에서 편집한 레이아웃/경로 정보 저장
+# ============================================================
+# 이 파일은 `sdd flow` 명령어로 자동 생성/수정됩니다.
+# 수동 편집도 가능하지만, 그래프 UI 사용을 권장합니다.
+# ============================================================
+
+flow_graph:
+  # ----------------------------------------------------------
+  # 메타데이터
+  # ----------------------------------------------------------
+  metadata:
+    version: "1.0.0"
+    created_at: "{{created_at}}"
+    last_modified: "{{last_modified}}"
+    # 소스 스펙 파일 해시 (동기화 확인용)
+    source_hashes:
+      functional_spec: "{{hash}}"
+      ui_spec: "{{hash}}"
+    # 레이아웃 설정
+    layout:
+      type: "hierarchical"  # hierarchical | dagre | force
+      direction: "TB"       # TB (top-bottom) | LR (left-right)
+      spacing:
+        node_x: 200
+        node_y: 150
+        group_padding: 40
+
+  # ----------------------------------------------------------
+  # 노드 정의
+  # ----------------------------------------------------------
+  nodes:
+    # Screen 노드 (ui-spec.yaml 참조)
+    screens:
+      - id: "screen-SCR-001"
+        source_ref: "ui-spec.yaml#SCR-001"  # 원본 참조 (JSONPath)
+        label: "{{screen_name}}"
+        route: "{{route_path}}"
+        position:
+          x: 100
+          y: 100
+        size:
+          width: 280
+          height: 180
+        # 화면 내 포함된 State 노드들
+        contains_states: ["state-F-001-idle"]
+        # 시각적 스타일
+        style:
+          expanded: true
+          color_theme: "default"  # default | primary | success | error | warning
+
+    # State 노드 (functional-spec.yaml의 states 참조)
+    states:
+      - id: "state-F-001-idle"
+        source_ref: "functional-spec.yaml#F-001.states.idle"
+        feature_id: "F-001"
+        label: "idle"
+        description: "초기 상태"
+        position:
+          x: 50
+          y: 50
+        # 상태 유형
+        type: "initial"  # initial | normal | final | error
+        # 포함된 Screen (null이면 독립 노드)
+        parent_screen: "screen-SCR-001"
+        # Happy path 포함 여부
+        on_happy_path: true
+
+    # Feature 그룹 노드 (선택사항 - 그룹핑용)
+    feature_groups: []
+      # - id: "group-F-001"
+      #   source_ref: "functional-spec.yaml#F-001"
+      #   label: "{{feature_name}}"
+      #   member_states: ["state-F-001-idle", "state-F-001-loading"]
+      #   bounds:
+      #     x: 80
+      #     y: 80
+      #     width: 400
+      #     height: 300
+      #   collapsed: false
+
+  # ----------------------------------------------------------
+  # 엣지 정의
+  # ----------------------------------------------------------
+  edges:
+    # 상태 전이 (functional-spec의 transitions)
+    transitions:
+      - id: "edge-F001-idle-to-loading"
+        source_ref: "functional-spec.yaml#F-001.states.idle.transitions[0]"
+        source_node: "state-F-001-idle"
+        target_node: "state-F-001-loading"
+        label: "{{trigger_event}}"
+        trigger: "{{trigger_event}}"
+        condition: null  # 조건이 있으면 문자열
+        # 경로 유형
+        path_type: "happy"  # happy | error | alternative
+        # 시각적 스타일
+        style:
+          animated: false
+          stroke_style: "solid"  # solid | dashed | dotted
+
+    # 화면 간 네비게이션 (ui-spec의 interactions에서 추론)
+    navigations: []
+      # - id: "nav-SCR001-to-SCR002"
+      #   source_ref: "ui-spec.yaml#SCR-001.interactions[0]"
+      #   source_screen: "screen-SCR-001"
+      #   target_screen: "screen-SCR-002"
+      #   trigger: "click submit button"
+      #   label: "Submit"
+
+    # 의존성 관계 (기능 간 참조)
+    dependencies: []
+      # - id: "dep-F001-to-F002"
+      #   source_feature: "F-001"
+      #   target_feature: "F-002"
+      #   dependency_type: "requires"  # requires | triggers | blocks
+
+  # ----------------------------------------------------------
+  # 경로 정의
+  # ----------------------------------------------------------
+  paths:
+    # Happy Path (주요 성공 시나리오)
+    happy_paths:
+      - id: "path-main-flow"
+        name: "메인 성공 플로우"
+        description: "사용자가 정상적으로 기능을 완료하는 흐름"
+        nodes: ["state-F-001-idle", "state-F-001-loading", "state-F-001-success"]
+        edges: ["edge-F001-idle-to-loading", "edge-F001-loading-to-success"]
+        # 하이라이트 색상 (QDS4 컬러 토큰 또는 HEX)
+        highlight_color: "#22c55e"
+
+    # Error Paths (에러 시나리오)
+    error_paths: []
+      # - id: "path-upload-error"
+      #   name: "업로드 실패 플로우"
+      #   description: "파일 업로드 중 에러 발생 시나리오"
+      #   branch_from: "state-F-001-loading"  # 분기점
+      #   nodes: ["state-F-001-loading", "state-F-001-error"]
+      #   edges: ["edge-F001-loading-to-error"]
+      #   error_case_ref: "functional-spec.yaml#F-001.error_cases[0]"
+      #   highlight_color: "#ef4444"
+
+  # ----------------------------------------------------------
+  # 뷰포트 상태 (마지막 뷰 저장)
+  # ----------------------------------------------------------
+  viewport:
+    zoom: 1.0
+    pan:
+      x: 0
+      y: 0
+    # 선택된 요소
+    selection: []
+    # 확장/축소된 그룹
+    expanded_groups: []
+
+# ============================================================
+# 동기화 메타데이터
+# ============================================================
+sync:
+  # 마지막 동기화 시간
+  last_sync: "{{timestamp}}"
+  # 충돌 해결 정책
+  conflict_resolution: "manual"  # manual | prefer_graph | prefer_spec
+  # 동기화에서 제외할 노드 (수동 추가된 노드)
+  manual_nodes: []
+  # 동기화 히스토리
+  history:
+    - timestamp: "{{timestamp}}"
+      action: "initial_generation"
+      changes: []
+
+# ============================================================
+# 메타데이터
+# ============================================================
+metadata:
+  created_at: "{{created_at}}"
+  author: "{{author}}"
+  status: "draft"
+  depends_on:
+    - "functional-spec.yaml"
+    - "ui-spec.yaml"
